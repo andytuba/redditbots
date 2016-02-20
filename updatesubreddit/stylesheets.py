@@ -42,7 +42,8 @@ def filename_param():
 	return args.src_path
 
 def files():
-	files = glob.iglob(filename_param())
+	glob_value = filename_param()
+	files = glob.iglob(glob_value)
 
 	#Should I just return files here?
 	try:
