@@ -4,6 +4,12 @@ import re
 
 # Derived from https://www.reddit.com/r/reddithax/comments/2nytff/a_python_bot_to_update_your_subreddits_css_in/
 def SubredditStylesheetUpdater(RedditBot):
+	app_id = 'DPuHaFaQZcBO6g'
+	app_uri = 'https://www.reddit.com/r/RESUpdates/'
+	app_scopes = 'modconfig'
+
+	loops = 0
+
 	stylesheets = {
 		'example': 'body { background: white; }'
 	}
