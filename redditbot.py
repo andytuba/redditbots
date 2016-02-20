@@ -60,7 +60,14 @@ class RedditBot(object): #, VerboseLogger):
 
         print('Logging in %s (%s)' % (self.useragent, self.app_id)) #self.log_debug
         r = praw.Reddit(self.useragent)
-        r.set_oauth_app_info(self.app_id, self.app_secret, self.app_uri)
+        r.set_oauth_app_info(client_id=self.app_id, client_secret=self.app_secret, redirect_uri=self.app_uri)
+
+        if self.app_refresh_token is None:
+            authorize_url = r.get_authorize_url('...', self.app_scopes, True)
+            print ('Visit:   %s\nand copy that token here: ' % authorize_url)
+            self.app_refresh_token = sys.stdin.readline()
+            print('To avoid this, `export %s=%s' % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
+
         r.refresh_access_information(self.app_refresh)
 
         while True:
