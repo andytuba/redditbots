@@ -79,7 +79,7 @@ class RedditBot(object): #, VerboseLogger):
                 traceback.print_exc()
             if LOOPS == 0:
                 break
-            LOOPS--
+            LOOPS -= 1
 
             time.sleep(sleep.wait)
             print('Running again in %d seconds\n' % sleep.wait) #self.log_info

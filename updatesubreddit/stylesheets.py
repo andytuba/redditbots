@@ -48,10 +48,10 @@ def files():
 	try:
 	    first_file = files.next()
 	except StopIteration:
-	    print('File does not exist: ' + args.src_path, file=sys.stderr)
+	    print('File does not exist: %s' % glob_value)
 	    sys.exit(1)
 
-	return itertools.chain([first_file], files):
+	return itertools.chain([first_file], files)
 
 def file_get_contents(filename):
 	    with open(filename) as f:
