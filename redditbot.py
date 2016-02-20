@@ -5,7 +5,8 @@ import praw
 import time
 import traceback
 import os
-from .logger import VerboseLogger
+import sys
+#from .logger import VerboseLogger
 
 class RedditBot(Object, VerboseLogger):
     loops = -1
@@ -26,6 +27,8 @@ class RedditBot(Object, VerboseLogger):
     def main(self):
         raise NotImplementedError
 
+    def __str__(self):
+        return '<RedditBot ua="%s", id="%s", scopes="%s">' % (self.useragent, self.app_id, self.app_scopes)
 
     def __init__(self):
         self.set_attr_from_env()
@@ -37,27 +40,31 @@ class RedditBot(Object, VerboseLogger):
                 setattr(self, attr, value)
 
     def run(self):
+        print('Config: %s' % self) #log_debug
+
         #sql = sqlite3.connect('filename.db')
         #cur = sql.cursor()
         #cur.execute('CREATE TABLE IF NOT EXISTS tablename(column TEXT)')
 
-        print('Logging in.')
+
+        print('Logging in %s (%s)' % (self.useragent, self.app_id)) #self.log_debug
         r = praw.Reddit(self.useragent)
         r.set_oauth_app_info(self.app_id, self.app_secret, self.app_uri)
         r.refresh_access_information(self.app_refresh)
 
         while True:
-            print('Running main')
+            print('Running main')   #self.log_debug
             try:
                 self.main(r)
             except Exception as e:
+                #if self.verbosity >= self.VERBOSITY.WARNING
                 traceback.print_exc()
             if LOOPS == 0:
                 break
             LOOPS--
 
             time.sleep(sleep.wait)
-            print('Running again in %d seconds\n' % sleep.wait)
+            print('Running again in %d seconds\n' % sleep.wait) #self.log_info
 
 
 
