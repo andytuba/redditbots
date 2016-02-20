@@ -1,4 +1,5 @@
-virtualenv deploy
-cd deploy
-source bin/activate
-pip install -r requirements.txt
+if [ ! -d bin ]; then
+	virtualenv .
+	source bin/activate
+	pip install -r requirements.txt
+fi
