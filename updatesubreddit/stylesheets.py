@@ -3,7 +3,7 @@ import argparse, glob, sys, itertools
 import re
 
 # Derived from https://www.reddit.com/r/reddithax/comments/2nytff/a_python_bot_to_update_your_subreddits_css_in/
-def SubredditStylesheetUpdater(RedditBot):
+class SubredditStylesheetUpdater(RedditBot):
 	app_id = 'DPuHaFaQZcBO6g'
 	app_uri = 'https://www.reddit.com/r/RESUpdates/'
 	app_scopes = 'modconfig'
@@ -65,6 +65,6 @@ def file_get_contents(filename):
 
 
 if __name__ == '__main__':
-    bot = RedditBot()
+    bot = SubredditStylesheetUpdater()
     bot.run()
 
