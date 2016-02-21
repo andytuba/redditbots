@@ -1,9 +1,11 @@
 from redditbot import RedditBot
 import argparse, glob, sys, itertools
+import os
 import re
 
 # Derived from https://www.reddit.com/r/reddithax/comments/2nytff/a_python_bot_to_update_your_subreddits_css_in/
 class SubredditStylesheetUpdater(RedditBot):
+	useragent = 'subreddit-updater-by-u-andytuba'
 	app_id = 'DPuHaFaQZcBO6g'
 	app_uri = 'https://www.reddit.com/r/RESUpdates/'
 	app_scopes = 'modconfig'
@@ -15,22 +17,30 @@ class SubredditStylesheetUpdater(RedditBot):
 	}
 
 	def main(self, r):
-		glob = self.filename_param()
-		self.log_debug('File glob: %s' % glob)
-		for filename in self.files(glob):
-			self.log_debug('Handling %s' % filename)
-			subreddit_name = re.match(r'^(\w\d_)+', filename).group(1)
+		glob = filename_param()
+		#self.log_debug
+		print('File glob: %s' % glob)
+		for filename in files(glob):
+			#self.log_debug
+			print('Handling %s' % filename)
+			subreddit_name = os.path.splitext(os.path.basename(filename))[0]
 			contents = file_get_contents(filename)
 
-			self.log_debug("/r/%s will be updated with: \n%s" % (subreddit_name, contents))
+			#self.log_debug
+			print("/r/%s will be updated with: \n%s" % (subreddit_name, contents))
 
-			if self.stylesheets[subreddit_name] != contents:
-				self.log_info('/r/%s/about/stylesheet is updating...' % (subreddit_name))
+			if self.stylesheets.get(subreddit_name) != contents:
+				#self.log_info
+				print('/r/%s/about/stylesheet is updating...' % (subreddit_name))
 				r.set_stylesheet(subreddit_name, contents)
 				self.stylesheets[subreddit_name] = contents
 
-			self.log_info('/r/%s/about/stylesheet is up to date' % (subreddit_name))
+			#self.log_info
+			print('/r/%s/about/stylesheet is up to date' % (subreddit_name))
 
+
+	# just for debugging
+	#def run(self): self.main(r=None)
 
 
 def filename_param():
@@ -41,10 +51,8 @@ def filename_param():
 	args = parser.parse_args()
 	return args.src_path
 
-def files():
-	glob_value = filename_param()
+def files(glob_value):
 	files = glob.iglob(glob_value)
-
 	#Should I just return files here?
 	try:
 	    first_file = files.next()
