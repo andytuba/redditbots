@@ -6,7 +6,7 @@ import time
 import traceback
 import os
 import sys
-#from .logger import VerboseLogger
+from logger import VerboseLogger
 
 class RedditBot(object): #, VerboseLogger):
     # Bot OAuth config
