@@ -77,7 +77,7 @@ class RedditBot(object): #, VerboseLogger):
             print("!!! To avoid this when invoking this script in the future,\n     export %s=\'%s\'" % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
 
 
-        r.refresh_access_information()
+        r.refresh_access_information(self.app_refresh_token)
         return r
 
     def loop(self):
