@@ -64,9 +64,9 @@ class RedditBot(object): #, VerboseLogger):
 
         if self.app_refresh_token is None:
             authorize_url = r.get_authorize_url('...', self.app_scopes, True)
-            print ('Visit:   %s\nand copy that token here: ' % authorize_url)
+            print ('!!! Visit:   %s\nand copy that token here: ' % authorize_url)
             self.app_refresh_token = sys.stdin.readline()
-            print('To avoid this, `export %s=%s' % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
+            print('!!! To avoid this when invoking this script in the future, `export %s=%s' % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
 
         r.refresh_access_information(self.app_refresh)
 
