@@ -19,16 +19,18 @@ class RedditBot(object): #, VerboseLogger):
     app_scopes = 'account creddits edit flair history identity livemanage modconfig modcontributors modflair modlog modothers modposts modself modwiki mysubreddits privatemessages read report save submit subscribe vote wikiedit wikiread'
 
     # User-specific OAuth data
-    app_refresh_token = None #Refresh token
+    app_refresh_token = None
 
     # Bot config
     loops = -1
     wait = 60
 
+    r = None #praw
+
     attr_env_mapping = {
         'app_secret': 'REDDIT_APP_SECRET',
         'app_uri': 'REDDIT_APP_URI',
-        'app_refresh_token': 'REDDIT_APP_REFRESH',
+        'app_refresh_token': 'REDDIT_APP_REFRESH_TOKEN',
 
         'loops': 'REDDIT_APP_LOOPS', # The number of times the bot should run before quitting. -1 for infinite, 1 for once, 2 for twice, etc. Runs at least once
         'wait': 'REDDIT_APP_WAIT', # The number of seconds between each cycle. The bot is completely inactive during this time.
@@ -51,6 +53,10 @@ class RedditBot(object): #, VerboseLogger):
         self.set_attr_from_env()
 
     def run(self):
+        self.r = self.authenticate()
+        self.loop()
+
+    def authenticate(self):
         print('Config: %s' % self) #log_debug
 
         #sql = sqlite3.connect('filename.db')
@@ -65,15 +71,20 @@ class RedditBot(object): #, VerboseLogger):
         if self.app_refresh_token is None:
             authorize_url = r.get_authorize_url('...', self.app_scopes, True)
             print ('!!! Visit:   %s\nand copy that token here: ' % authorize_url)
-            self.app_refresh_token = sys.stdin.readline()
-            print('!!! To avoid this when invoking this script in the future, `export %s=%s' % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
+            self.app_account_code = sys.stdin.readline().strip()
+            access_information = r.get_access_information(self.app_account_code)
+            self.app_refresh_token = access_information['refresh_token']
+            print("!!! To avoid this when invoking this script in the future,\n     export %s=\'%s\'" % (self.attr_env_mapping['app_refresh_token'], self.app_refresh_token))
 
-        r.refresh_access_information(self.app_refresh)
 
+        r.refresh_access_information()
+        return r
+
+    def loop(self):
         while True:
             print('Running main')   #self.log_debug
             try:
-                self.main(r)
+                self.main(self.r)
             except Exception as e:
                 #if self.verbosity >= self.VERBOSITY.WARNING
                 traceback.print_exc()
